@@ -2,72 +2,101 @@ const tempVille = document.querySelector("#temperature_label");
 const ville = document.querySelector("#ville");
 const btnChangerVille = document.querySelector("#changer");
 const inputText = document.querySelector(".input-text");
+const loader = document.getElementById("loader");
+const content = document.querySelector(".content");
 
-let Api_key = ``;
+let Api_key = `d4175e59e1d90c584366281b617c9779`;
 let city = "Paris";
-// const lat = 48.8534; // paris
-// const lon = 2.3488; // paris
+let lat;
+let lon;
 // const units = ``;
 let reponse;
 let temps;
 let iconWeather = document.getElementById("myImage");
 
-const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${Api_key}&units=metric`;
-
-envoyerRequete(url);
-
-// mettre le focus sur l'input dès le chargement de la page
 inputText.focus();
 
-// recuperer le text de l'input
-const cityInput = (e) => {
-  // Trim pour supprimer les espaces avant et après la valeur de l'input
-  let ValeurInput = inputText.value.trim();
-  console.log("valeur input =>", ValeurInput);
-  console.log("valeur input =>", ValeurInput);
-  console.log(e.key);
-  // Vérifier si la touche appuyée est "Enter" et si la valeur de l'input n'est pas vide
-  city = ValeurInput;
-  if (e.key === "Enter" && ValeurInput !== "") {
-    city = ValeurInput;
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${Api_key}&units=metric`;
-    envoyerRequete(url);
-    inputText.value = "";
-  }
+let url;
+
+const options = {
+  enableHighAccuracy: true,
 };
-inputText.addEventListener("keydown", cityInput);
+console.log("1", url);
+// GEOLOCALISATION
+//####################################################
+//Cacher le "contenu" et mettre un "loader" en attendant de recevoir les données d'api
+content.style.display = "none";
+loader.classList.add("loader");
+//#####################################################
+if ("geolocation" in navigator) {
+  console.log("2", url);
+  navigator.geolocation.watchPosition(
+    (position) => {
+      lat = position.coords.latitude;
+      lon = position.coords.longitude;
+      url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${Api_key}&units=metric`;
+      console.log("3", url);
+      // loader
+      //##############################################
+      //Aprés reception des données afficher le "contenu" et enlever le "loader"
+      content.style.display = "inline";
+      loader.classList.remove("loader");
+      //################################################
 
-function envoyerRequete(url) {
-  let requete = new XMLHttpRequest();
-  requete.open("GET", url);
+      function envoyerRequete(url) {
+        "use strict";
+        fetch(url)
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+            temps = data.main.temp;
+            city = data.name;
+            ville.textContent = city;
+            tempVille.textContent = temps;
 
-  requete.responseType = "json";
-
-  requete.send();
-  requete.onload = function () {
-    if (requete.readyState === XMLHttpRequest.DONE) {
-      if (requete.status === 200) {
-        reponse = requete.response;
-        temps = reponse.main.temp;
-        city = reponse.name;
-        ville.textContent = city;
-        tempVille.textContent = temps;
-        //   console.log("1- temp", temps);
-        //   console.log("1- city", reponse.name);
-        iconWeather.src = `http://openweathermap.org/img/w/${reponse.weather[0].icon}.png`;
+            iconWeather.src = `http://openweathermap.org/img/w/${data.weather[0].icon}.png`;
+          })
+          .catch((err) => {
+            console.error(err);
+            alert("Un problème est intervenu, merci de revenir plus tard.");
+          });
       }
-    } else {
-      alert("Un problème est intervenu, merci de revenir plus tard.");
-    }
-  };
+
+      const cityInput = (e) => {
+        "use strict";
+        // Trim pour supprimer les espaces avant et après la valeur de l'input
+        let ValeurInput = inputText.value.trim();
+
+        // Vérifier si la touche appuyée est "Enter" et si la valeur de l'input n'est pas vide
+        city = ValeurInput;
+        if (e.key === "Enter" && ValeurInput !== "") {
+          city = ValeurInput;
+          url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${Api_key}&units=metric`;
+          envoyerRequete(url);
+          inputText.value = "";
+        }
+      };
+      inputText.addEventListener("keydown", cityInput);
+
+      const recevoirTemperature = () => {
+        "use strict";
+        city = inputText.value.trim();
+
+        url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${Api_key}&units=metric`;
+        envoyerRequete(url);
+        inputText.value = "";
+      };
+
+      btnChangerVille.addEventListener("click", recevoirTemperature);
+      envoyerRequete(url);
+    },
+    erreur,
+    options
+  );
+} else {
+  recevoirTemperature(city);
 }
 
-const recevoirTemperature = () => {
-  city = inputText.value.trim();
-
-  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${Api_key}&units=metric`;
-  envoyerRequete(url);
-  inputText.value = "";
-};
-
-btnChangerVille.addEventListener("click", recevoirTemperature);
+function erreur() {
+  recevoirTemperature(city);
+}

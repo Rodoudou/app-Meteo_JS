@@ -1,45 +1,85 @@
-html, body {
-    background: #2980B9;
-    background: -webkit-linear-gradient(to right, #FFFFFF, #6DD5FA, #2980B9);
-    background: linear-gradient(to right, #FFFFFF, #6DD5FA, #2980B9);
-    min-width: 400px;
+html,
+body {
+  background: #2980b9;
+  background: -webkit-linear-gradient(to right, #ffffff, #6dd5fa, #2980b9);
+  background: linear-gradient(to right, #ffffff, #6dd5fa, #2980b9);
+  min-width: 400px;
+}
+
+#ville {
+  text-transform: capitalize;
+}
+
+#temperature {
+  font-size: 4em;
+}
+
+#changer {
+  background-color: #4caf50; /* couleur de fond */
+  border: none;
+  color: white; /* couleur du texte */
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+#myImage {
+  height: 50px;
+  width: 50px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.input-text {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: white;
+  font-size: 16px;
+  color: #333;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  justify-items: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* LOADER */
+.loader {
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid blue;
+  border-right: 16px solid green;
+  border-bottom: 16px solid red;
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
   }
-  
-  #ville {
-    text-transform: capitalize;
+  100% {
+    -webkit-transform: rotate(360deg);
   }
-  
-  #temperature {
-    font-size: 4em;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
   }
-  
-  #changer {
-    background-color: #4CAF50; /* couleur de fond */
-    border: none;
-    color: white; /* couleur du texte */
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
+  100% {
+    transform: rotate(360deg);
   }
-  
-  #myImage{
-    height: 50px;
-    width: 50px;
-  }
-  
-  .text-center{
-    text-align: center;
-  }
-  
-  .input-text {
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    background-color: white;
-    font-size: 16px;
-    color: #333;
-  }
+}
