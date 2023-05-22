@@ -5,7 +5,7 @@ const inputText = document.querySelector(".input-text");
 const loader = document.getElementById("loader");
 const content = document.querySelector(".content");
 
-let Api_key = `4ec874578cad7913fe2018f994600536`;
+let Api_key = ``;
 let city = "Paris";
 let lat;
 let lon;
