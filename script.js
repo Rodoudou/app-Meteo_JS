@@ -5,7 +5,7 @@ const inputText = document.querySelector(".input-text");
 const loader = document.getElementById("loader");
 const content = document.querySelector(".content");
 
-let Api_key = ``;
+let Api_key = `4ec874578cad7913fe2018f994600536`;
 let city = "Paris";
 let lat;
 let lon;
@@ -28,8 +28,19 @@ console.log("1", url);
 content.style.display = "none";
 loader.classList.add("loader");
 //#####################################################
+
+function recevoirTemperature() {
+  "use strict";
+  city = inputText.value.trim();
+
+  url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${Api_key}&units=metric`;
+  envoyerRequete(url);
+  inputText.value = "";
+}
+
+btnChangerVille.addEventListener("click", recevoirTemperature);
+
 if ("geolocation" in navigator) {
-  console.log("2", url);
   navigator.geolocation.watchPosition(
     (position) => {
       lat = position.coords.latitude;
@@ -46,7 +57,12 @@ if ("geolocation" in navigator) {
       function envoyerRequete(url) {
         "use strict";
         fetch(url)
-          .then((response) => response.json())
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Erreur HTTP " + response.status);
+            }
+            return response.json();
+          })
           .then((data) => {
             console.log(data);
             temps = data.main.temp;
@@ -78,16 +94,6 @@ if ("geolocation" in navigator) {
       };
       inputText.addEventListener("keydown", cityInput);
 
-      const recevoirTemperature = () => {
-        "use strict";
-        city = inputText.value.trim();
-
-        url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${Api_key}&units=metric`;
-        envoyerRequete(url);
-        inputText.value = "";
-      };
-
-      btnChangerVille.addEventListener("click", recevoirTemperature);
       envoyerRequete(url);
     },
     erreur,
